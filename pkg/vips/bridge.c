@@ -63,7 +63,7 @@ int save_jpeg_buffer(VipsImage *in, void **buf, size_t *len, int strip, int qual
 	);
 }
 
-int save_png_buffer(VipsImage *in, void **buf, size_t *len, int strip, int compression, int quality, int interlace) {
+int save_png_buffer(VipsImage *in, void **buf, size_t *len, int strip, int compression, int interlace) {
 	return vips_pngsave_buffer(in, buf, len,
 		"strip", INT_TO_GBOOLEAN(strip),
 		"compression", compression,
