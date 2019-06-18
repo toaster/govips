@@ -30,6 +30,7 @@ type ExportParams struct {
 	Compression     int
 	Interlaced      bool
 	Lossless        bool
+	ReductionEffort int
 	StripProfile    bool
 	StripMetadata   bool
 	Interpretation  Interpretation

@@ -213,3 +213,48 @@ func TestImageRef_AutorotAngle(t *testing.T) {
 		})
 	}
 }
+
+func TestImageRef_Export(t *testing.T) {
+	img, err := vips.NewImageFromFile("testdata/test.png")
+	require.NoError(t, err)
+	tests := map[string]struct {
+		params   vips.ExportParams
+		wantFile string
+		wantType vips.ImageType
+	}{
+		"WebP lossy with Quality=25": {
+			params:   vips.ExportParams{Format: vips.ImageTypeWEBP, Quality: 25},
+			wantFile: "testdata/test_q25.webp",
+			wantType: vips.ImageTypeWEBP,
+		},
+		"WebP lossy with Quality=75": {
+			params:   vips.ExportParams{Format: vips.ImageTypeWEBP, Quality: 75},
+			wantFile: "testdata/test_q75.webp",
+			wantType: vips.ImageTypeWEBP,
+		},
+		"WebP lossless with ReductionEffort=0": {
+			params:   vips.ExportParams{Format: vips.ImageTypeWEBP, Lossless: true, ReductionEffort: 0},
+			wantFile: "testdata/test_lossless_re0.webp",
+			wantType: vips.ImageTypeWEBP,
+		},
+		"WebP lossless with defaults (ReductionEffort=4)": {
+			params:   vips.ExportParams{Format: vips.ImageTypeWEBP, Lossless: true, ReductionEffort: 4},
+			wantFile: "testdata/test_lossless_re4.webp",
+			wantType: vips.ImageTypeWEBP,
+		},
+		"WebP lossless with ReductionEffort=6": {
+			params:   vips.ExportParams{Format: vips.ImageTypeWEBP, Lossless: true, ReductionEffort: 6},
+			wantFile: "testdata/test_lossless_re6.webp",
+			wantType: vips.ImageTypeWEBP,
+		},
+	}
+	for tname, tt := range tests {
+		t.Run(tname, func(t *testing.T) {
+			buf, typ, err := img.Export(tt.params)
+			require.NoError(t, err)
+			goldenBuf, err := ioutil.ReadFile(tt.wantFile)
+			assert.Equal(t, goldenBuf, buf)
+			assert.Equal(t, tt.wantType, typ)
+		})
+	}
+}

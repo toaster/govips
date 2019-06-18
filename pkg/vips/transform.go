@@ -63,9 +63,10 @@ func NewTransform() *Transform {
 			EnlargementInterpolator: InterpolateBicubic,
 		},
 		export: &ExportParams{
-			Format:         ImageTypeUnknown,
-			Quality:        90,
-			Interpretation: InterpretationSRGB,
+			Format:          ImageTypeUnknown,
+			Quality:         90,
+			ReductionEffort: 4,
+			Interpretation:  InterpretationSRGB,
 		},
 	}
 }

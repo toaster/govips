@@ -194,7 +194,7 @@ func vipsExportBuffer(image *C.VipsImage, params *ExportParams) ([]byte, ImageTy
 	switch format {
 	case ImageTypeWEBP:
 		incOpCounter("save_webp_buffer")
-		cErr = C.save_webp_buffer(tmpImage, &ptr, &cLen, stripMetadata, quality, lossless)
+		cErr = C.save_webp_buffer(tmpImage, &ptr, &cLen, stripMetadata, quality, lossless, C.int(params.ReductionEffort))
 	case ImageTypePNG:
 		incOpCounter("save_png_buffer")
 		cErr = C.save_png_buffer(tmpImage, &ptr, &cLen, stripMetadata, C.int(params.Compression), interlaced)
