@@ -8,7 +8,10 @@ go:
   - 1.9
 
 env:
-  - VIPS_VERSION=8.8.0
+  global:
+    - WEBP_VERSION=1.0.2
+  matrix:
+    - VIPS_VERSION=8.8.0
 
 matrix:
   allow_failures:
@@ -18,7 +21,8 @@ matrix:
 cache:
   apt: true
   directories:
-    - libvips
+    - $HOME/libwebp
+    - $HOME/libvips
 
 addons:
   apt:
@@ -35,12 +39,24 @@ addons:
       - liborc-0.4-dev
       - libpango1.0-dev
       - libpoppler-glib-dev
-      - libwebp-dev
 
-# VIPS 8.3.3 requires Poppler 0.30 which is not released on Trusty.
+# VIPS 8.8.0 requires libwebp 0.5 which is not released on Trusty.
 before_install:
   - |
-    cd libvips
+    cd $HOME/libwebp
+    test -d libwebp-${WEBP_VERSION} && {
+      cd libwebp-${WEBP_VERSION}
+    } || {
+      wget https://storage.googleapis.com/downloads.webmproject.org/releases/webp/libwebp-${WEBP_VERSION}.tar.gz
+      tar xzf libwebp-${WEBP_VERSION}.tar.gz
+      cd libwebp-${WEBP_VERSION}
+      ./configure --enable-libwebpmux
+      make
+    }
+    sudo make install
+    sudo ldconfig
+  - |
+    cd $HOME/libvips
     test -d libvips-${VIPS_VERSION} && {
       cd libvips-${VIPS_VERSION}
     } || {
@@ -53,7 +69,7 @@ before_install:
     }
     sudo make install
     sudo ldconfig
-    cd ../..
+  - cd $TRAVIS_BUILD_DIR
 
 before_script:
   - go get -u github.com/golang/lint/golint
